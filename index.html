@@ -210,7 +210,7 @@ h2{font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;c
     <div class="qa">
       <button onclick="tab('charge')"><span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8.5 7.5a6 6 0 0 1 0 9M12 5a9.5 9.5 0 0 1 0 14M5 10a2.5 2.5 0 0 1 0 4"/></svg></span>Cobrar</button>
       <button onclick="go('qr')"><span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/></svg></span>QR</button>
-      <button onclick="tab('money')"><span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg></span>Mi plata</button>
+      <button onclick="tab('money')"><span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg></span>Mis cobros</button>
       <button onclick="go('invoices')"><span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg></span>Facturas</button>
     </div>
     <div class="stats">
@@ -283,11 +283,11 @@ h2{font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;c
 
   <!-- MONEY / SETTLEMENTS -->
   <section class="screen" id="s-money">
-    <h1>Mi plata</h1>
+    <h1>Mis cobros</h1>
     <div class="card glow" style="margin-top:20px">
       <div class="sm mut" style="position:relative;z-index:1">Por acreditar</div>
       <div class="bal" id="m-pend"><small>$</small>0</div>
-      <div class="sm mut" style="position:relative;z-index:1">Ventas aprobadas menos comisión (ejemplo)</div>
+      <div class="sm mut" style="position:relative;z-index:1">Ventas aprobadas (ejemplo, sin descontar comisión)</div>
     </div>
     <h2>Se deposita en</h2>
     <div class="card bank">
@@ -349,7 +349,7 @@ h2{font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;c
     <button class="tab" data-t="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg>Inicio</button>
     <button class="tab" data-t="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Actividad</button>
     <button class="fab" data-t="charge" aria-label="Cobrar"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M8.5 7.5a6 6 0 0 1 0 9M12 5a9.5 9.5 0 0 1 0 14M5 10a2.5 2.5 0 0 1 0 4"/></svg></button>
-    <button class="tab" data-t="money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>Mi plata</button>
+    <button class="tab" data-t="money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>Mis cobros</button>
     <button class="tab" data-t="more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg>Más</button>
   </nav>
   <div class="toast" id="toast"></div>
@@ -358,7 +358,7 @@ h2{font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;c
 <script>
 const $=s=>document.querySelector(s);
 const fmt=n=>'$ '+Math.round(n).toLocaleString('es-UY');
-const FEE=0.013; // solo ilustrativo
+const FEE=0; // comisión a definir, no mostrar tasas
 const S={amt:'',type:'Débito',cur:'welcome',hist:[],filter:'all'};
 const TX=[
  {id:'A9F3',t:'13:42',c:'Venta mostrador',b:'VISA',k:'Débito',n:'4512',a:1250,ok:1},
@@ -405,7 +405,7 @@ function renderInv(){$('#i-list').innerHTML=TX.filter(x=>x.ok).map((x,i)=>`<div 
 function detail(id){
   const x=TX.find(t=>t.id===id); const fee=x.ok?x.a*FEE:0;
   $('#d-body').innerHTML=`<div style="text-align:center;margin:10px 0 22px">${badge(x,'margin:0 auto 14px;width:64px;height:64px;border-radius:20px;font-size:13px;font-weight:800;display:grid;place-items:center;background:var(--card2);border:1px solid var(--line)')}<div class="tapamt">${fmt(x.a)}</div><span class="pill ${x.ok?'':'b'}" style="margin-top:8px">${x.ok?'✓ Aprobado':'✕ Rechazado'}</span></div>
-  <div class="card rcpt" style="margin-top:0"><div class="l"><span>Concepto</span>${x.c}</div><div class="l"><span>Medio</span>${x.b==='QR'?'QR':x.b+' '+x.k}${x.n?' •••• '+x.n:''}</div><div class="l"><span>Hora</span>Hoy ${x.t}</div><div class="l"><span>Comisión (ejemplo)</span>${fmt(fee)}</div><div class="l"><span>Neto a recibir</span><b>${fmt(x.a-fee)}</b></div><div class="l"><span>Operación</span>#${x.id}</div></div>
+  <div class="card rcpt" style="margin-top:0"><div class="l"><span>Concepto</span>${x.c}</div><div class="l"><span>Medio</span>${x.b==='QR'?'QR':x.b+' '+x.k}${x.n?' •••• '+x.n:''}</div><div class="l"><span>Hora</span>Hoy ${x.t}</div><div class="l"><span>Comisión</span>A definir</div><div class="l"><span>Monto de la venta</span><b>${fmt(x.a-fee)}</b></div><div class="l"><span>Operación</span>#${x.id}</div></div>
   ${x.ok?`<button class="btn pri" style="margin-top:18px" onclick="toast('Comprobante compartido (demo)')">Compartir comprobante</button><button class="btn sec" style="margin-top:10px" onclick="toast('Devolución iniciada (demo)')">Devolver</button>`:`<button class="btn pri" style="margin-top:18px" onclick="S.amt='${x.a}';S.type='${x.k}';startTap()">Reintentar cobro</button>`}`;
   go('detail');
 }
